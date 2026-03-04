@@ -27,6 +27,21 @@ function updateNav() {
    }
 }
 
+// ── Remember Me: restore saved email after auth page loads ──────────────────
+function initRememberMe() {
+   const rememberedEmail = localStorage.getItem("rememberedEmail");
+   const emailInput = document.getElementById("userEmail");
+   const rememberCheckbox = document.getElementById("rememberMe");
+   
+   if (!emailInput || !rememberCheckbox) return;
+   
+   if (rememberedEmail) {
+      emailInput.value = rememberedEmail;
+      rememberCheckbox.checked = true;
+   }
+}
+// ───────────────────────────────────────────────────────────────────────────
+
 function loadPage(page) {
    const pageDiv = document.getElementById("page");
    
@@ -61,6 +76,12 @@ function loadPage(page) {
          if (page === "account") {
             initAccountPage();
          }
+         
+         // ── Remember Me: run after auth page HTML is injected ──────────
+         if (page === "auth") {
+            initRememberMe();
+         }
+         // ──────────────────────────────────────────────────────────────
       })
       .catch(err => {
          pageDiv.innerHTML = `<h1>Error 404</h1><p>${err.message}</p>`;
@@ -160,6 +181,7 @@ document.addEventListener("click", (e) => {
    if (e.target.id === "login-submit-btn") {
       const email = document.getElementById("userEmail").value.trim();
       const password = document.getElementById("userPassword").value;
+      const rememberMe = document.getElementById("rememberMe").checked; // ── Remember Me
       const storedUser = localStorage.getItem("user_" + email);
       
       if (!storedUser) {
@@ -172,6 +194,14 @@ document.addEventListener("click", (e) => {
          alert("Incorrect password");
          return;
       }
+      
+      // ── Remember Me: save or clear the remembered email ────────────────
+      if (rememberMe) {
+         localStorage.setItem("rememberedEmail", email);
+      } else {
+         localStorage.removeItem("rememberedEmail");
+      }
+      // ──────────────────────────────────────────────────────────────────
       
       localStorage.setItem("loggedInUser", email);
       alert("Login successful!");
