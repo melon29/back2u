@@ -269,7 +269,7 @@ function initAccountPage() {
    document.getElementById("account-phone").textContent = user.phone || "Not provided";
    document.getElementById("account-pincode").textContent = user.pincode || "Not provided";
    
-   const allReports = JSON.parse(localStorage.getItem("lostReports")) || [];
+   const allReports = JSON.parse(localStorage.getItem("petReports")) || [];
    const userReports = allReports.filter(report => report.reportedBy === loggedInEmail);
    const listContainer = document.querySelector(".past-reports ul");
    
@@ -278,4 +278,15 @@ function initAccountPage() {
          <li><strong>${pet.name}</strong> (${pet.type}) - Reported on ${pet.date}</li>
       `).join("");
    }
+}
+
+function capitalizeFirst(str) {
+   if (!str) return "";
+   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+function formatDate(dateStr) {
+   if (!dateStr) return "";
+   const [year, month, day] = dateStr.split("-");
+   return `${day}-${month}-${year}`;
 }
